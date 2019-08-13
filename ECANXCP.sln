@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECANXCP", "ECANXCP.csproj", "{8C548464-A264-49F0-8996-90F11687EA97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debug", "02_Debug\Debug.csproj", "{0A29D5B2-D681-4416-A551-0EECF9C2CFB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C548464-A264-49F0-8996-90F11687EA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C548464-A264-49F0-8996-90F11687EA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C548464-A264-49F0-8996-90F11687EA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C548464-A264-49F0-8996-90F11687EA97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A29D5B2-D681-4416-A551-0EECF9C2CFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A29D5B2-D681-4416-A551-0EECF9C2CFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A29D5B2-D681-4416-A551-0EECF9C2CFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A29D5B2-D681-4416-A551-0EECF9C2CFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
