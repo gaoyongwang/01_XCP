@@ -14,9 +14,9 @@ namespace WindowsFormsApplication
 {
     public partial class FormMain : Form
     {
-        BOARD_INFO m_BoardInfo = new BOARD_INFO();
+        BOARD_INFO boardInfo = new BOARD_INFO();
         XCPApi xcpapi = new XCPApi();
-        byte[] MsgTemp = new byte[8];
+        byte[] msgTemp = new byte[8];
 
         ECANXCP.XCPApi.TXCPResult result;
         
@@ -39,17 +39,17 @@ namespace WindowsFormsApplication
 
         private void Init_Click(object sender, EventArgs e)
         {
-            if (xcpapi.GcCanInitialize("500K", out m_BoardInfo))
+            if (xcpapi.GcCanInitialize("500K", out boardInfo))
             {
-                PrintLog("硬件版本号：" + m_BoardInfo.hw_Version.ToString());
-                PrintLog("固件版本号：" + m_BoardInfo.fw_Version.ToString());
-                PrintLog("驱动程序版本号：" + m_BoardInfo.dr_Version.ToString());
-                PrintLog("接口库版本号：" + m_BoardInfo.in_Version.ToString());
-                PrintLog("中断号：" + m_BoardInfo.irq_Num.ToString());
-                PrintLog("CAN通道数：" + m_BoardInfo.can_Num.ToString());
-                PrintLog("设备序列号：" + System.Text.Encoding.Default.GetString(m_BoardInfo.str_Serial_Num));
+                PrintLog("硬件版本号：" + boardInfo.hw_Version.ToString());
+                PrintLog("固件版本号：" + boardInfo.fw_Version.ToString());
+                PrintLog("驱动程序版本号：" + boardInfo.dr_Version.ToString());
+                PrintLog("接口库版本号：" + boardInfo.in_Version.ToString());
+                PrintLog("中断号：" + boardInfo.irq_Num.ToString());
+                PrintLog("CAN通道数：" + boardInfo.can_Num.ToString());
+                PrintLog("设备序列号：" + System.Text.Encoding.Default.GetString(boardInfo.str_Serial_Num));
                 PrintLog("\n");
-                PrintLog("硬件类型：" + System.Text.Encoding.Default.GetString(m_BoardInfo.str_hw_Type));
+                PrintLog("硬件类型：" + System.Text.Encoding.Default.GetString(boardInfo.str_hw_Type));
                 PrintLog("\n");
             }
             else
@@ -73,26 +73,26 @@ namespace WindowsFormsApplication
 
         private void timer_Read_Tick(object sender, EventArgs e)
         {
-            result = xcpapi.XCP_ShortUpload(0x00, 0xB00000C0, out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToSingle(MsgTemp, 1).ToString());
+            result = xcpapi.XCP_ShortUpload(0x00, 0xB00000C0, out msgTemp, 0x08);
+            PrintLog(BitConverter.ToSingle(msgTemp, 1).ToString());
 
-            result = xcpapi.XCP_ShortUpload(0x00, 0x700119B8, out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToSingle(MsgTemp, 1).ToString());
+            result = xcpapi.XCP_ShortUpload(0x00, 0x700119B8, out msgTemp, 0x08);
+            PrintLog(BitConverter.ToSingle(msgTemp, 1).ToString());
 
-            result = xcpapi.XCP_ShortUpload(0x00, 0x50004394, out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToSingle(MsgTemp, 1).ToString());
+            result = xcpapi.XCP_ShortUpload(0x00, 0x50004394, out msgTemp, 0x08);
+            PrintLog(BitConverter.ToSingle(msgTemp, 1).ToString());
         }
 
         private void button_Connect_Click(object sender, EventArgs e)
         {
-            result = xcpapi.XCP_Connect(0x00, out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToString(MsgTemp));
+            result = xcpapi.XCP_Connect(0x00, out msgTemp, 0x08);
+            PrintLog(BitConverter.ToString(msgTemp));
         }
 
         private void button_Disconnect_Click(object sender, EventArgs e)
         {
-            result = xcpapi.XCP_Disconnect(out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToString(MsgTemp));
+            result = xcpapi.XCP_Disconnect(out msgTemp, 0x08);
+            PrintLog(BitConverter.ToString(msgTemp));
 
             timer_Read.Enabled = false;
         }
@@ -104,10 +104,10 @@ namespace WindowsFormsApplication
 
         private void numericUpDown_UV_ValueChanged(object sender, EventArgs e)
         {
-            result = xcpapi.XCP_SetMemoryTransferAddress(0x00, 0x50004048, out MsgTemp, 0x08);
-            result = xcpapi.XCP_Download(BitConverter.GetBytes(Convert.ToSingle(numericUpDown_UV.Value)), out MsgTemp, 0x08);
-            result = xcpapi.XCP_ShortUpload(0x00, 0x50004048, out MsgTemp, 0x08);
-            PrintLog(BitConverter.ToSingle(MsgTemp, 1).ToString());
+            result = xcpapi.XCP_SetMemoryTransferAddress(0x00, 0x50004048, out msgTemp, 0x08);
+            result = xcpapi.XCP_Download(BitConverter.GetBytes(Convert.ToSingle(numericUpDown_UV.Value)), out msgTemp, 0x08);
+            result = xcpapi.XCP_ShortUpload(0x00, 0x50004048, out msgTemp, 0x08);
+            PrintLog(BitConverter.ToSingle(msgTemp, 1).ToString());
         }
     }
 }

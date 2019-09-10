@@ -8,17 +8,23 @@ namespace ECANXCP
 {
     public class XCPApi
     {
-        public UInt32 DeviceType;// 设备类型号，USBCAN I 选择3，USBCAN II 选择4
-        public UInt32 DeviceIndex;// 设备索引号，当只有一个设备时，索引号为0，有两个时可以为0或1
-        public UInt32 CANIndex;// 第几路CAN，即对应卡的CAN通道号，CAN0为0，CAN1为1
-        public UInt32 MasterID;// 主设备ID
-        public UInt32 SlaveID;// 从设备ID
-        INIT_CONFIG init_config = new INIT_CONFIG();// 创建CAN初始化配置结构体
-        CAN_OBJ FrameInfo = new CAN_OBJ();// 报文帧
-        FILTER_RECORD FilterRecord = new FILTER_RECORD();// 定义CAN滤波器的滤波范围
+        private UInt32 deviceType;// 设备类型号，USBCAN I 选择3，USBCAN II 选择4
+        private UInt32 deviceIndex;// 设备索引号，当只有一个设备时，索引号为0，有两个时可以为0或1
+        private UInt32 canIndex;// 第几路CAN，即对应卡的CAN通道号，CAN0为0，CAN1为1
+        private UInt32 masterID;// 主设备ID
+        private UInt32 slaveID;// 从设备ID
+        INIT_CONFIG initConfig = new INIT_CONFIG();// 创建CAN初始化配置结构体
+        CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+        FILTER_RECORD filterRecord = new FILTER_RECORD();// 定义CAN滤波器的滤波范围
 
-        UInt32 NumOfFrameTX;// 实际发送帧数量
-        UInt32 NumOfFrameRX;// 接收帧数量
+        private UInt32 numOfFrameTX;// 实际发送帧数量
+        private UInt32 numOfFrameRX;// 接收帧数量
+
+        public UInt32 DeviceType { get; set; }
+        public UInt32 DeviceIndex { get; set; }
+        public UInt32 CanIndex { get; set; }
+        public UInt32 MasterID { get; set; }
+        public UInt32 SlaveID { get; set; }
 
         /// <summary>
         /// 定义错误码
@@ -149,118 +155,118 @@ namespace ECANXCP
 
         public XCPApi()
         {
-            this.DeviceType = 3;
-            this.DeviceIndex = 0;
-            this.CANIndex = 0;
-            this.MasterID = 0x7FB;
-            this.SlaveID = 0x7FC;
+            this.deviceType = 3;
+            this.deviceIndex = 0;
+            this.canIndex = 0;
+            this.masterID = 0x7FB;
+            this.slaveID = 0x7FC;
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="Baudrate">波特率</param>
-        /// <param name="BoardInfo">设备信息</param>
+        /// <param name="baudrate">波特率</param>
+        /// <param name="boardInfo">设备信息</param>
         /// <returns></returns>
-        public bool GcCanInitialize(string Baudrate, out BOARD_INFO BoardInfo)
+        public bool GcCanInitialize(string baudrate, out BOARD_INFO boardInfo)
         {
-            BoardInfo.hw_Version = 0x00;
-            BoardInfo.fw_Version = 0x00;
-            BoardInfo.dr_Version = 0x00;
-            BoardInfo.in_Version = 0x00;
-            BoardInfo.irq_Num = 0x00;
-            BoardInfo.can_Num = 0x00;
-            BoardInfo.str_Serial_Num = new byte[] { 0x00 };
-            BoardInfo.str_hw_Type = new byte[] { 0x00 };
-            BoardInfo.Reserved = new ushort[] { 0x00 };
+            boardInfo.hw_Version = 0x00;
+            boardInfo.fw_Version = 0x00;
+            boardInfo.dr_Version = 0x00;
+            boardInfo.in_Version = 0x00;
+            boardInfo.irq_Num = 0x00;
+            boardInfo.can_Num = 0x00;
+            boardInfo.str_Serial_Num = new byte[] { 0x00 };
+            boardInfo.str_hw_Type = new byte[] { 0x00 };
+            boardInfo.Reserved = new ushort[] { 0x00 };
 
             // 滤波设置
-            init_config.AccCode = ((UInt32)(SlaveID) << 21);
-            init_config.AccMask = 0x001FFFFF;
+            initConfig.AccCode = ((UInt32)(slaveID) << 21);
+            initConfig.AccMask = 0x001FFFFF;
             // 初始化配置滤波使能
-            init_config.Filter = 1;
+            initConfig.Filter = 1;
 
-            FilterRecord.ExtFrame = 0;
-            FilterRecord.Start = MasterID;
-            FilterRecord.End = SlaveID;
+            filterRecord.ExtFrame = 0;
+            filterRecord.Start = masterID;
+            filterRecord.End = slaveID;
 
             // 初始化配置波特率
-            switch (Baudrate)
+            switch (baudrate)
             {
                 case "1000K":
 
-                    init_config.Timing0 = 0;
-                    init_config.Timing1 = 0x14;
+                    initConfig.Timing0 = 0;
+                    initConfig.Timing1 = 0x14;
                     break;
                 case "800K":
 
-                    init_config.Timing0 = 0;
-                    init_config.Timing1 = 0x16;
+                    initConfig.Timing0 = 0;
+                    initConfig.Timing1 = 0x16;
                     break;
                 case "666K":
 
-                    init_config.Timing0 = 0x80;
-                    init_config.Timing1 = 0xb6;
+                    initConfig.Timing0 = 0x80;
+                    initConfig.Timing1 = 0xb6;
                     break;
                 case "500K":
 
-                    init_config.Timing0 = 0;
-                    init_config.Timing1 = 0x1c;
+                    initConfig.Timing0 = 0;
+                    initConfig.Timing1 = 0x1c;
                     break;
                 case "400K":
 
-                    init_config.Timing0 = 0x80;
-                    init_config.Timing1 = 0xfa;
+                    initConfig.Timing0 = 0x80;
+                    initConfig.Timing1 = 0xfa;
                     break;
                 case "250K":
 
-                    init_config.Timing0 = 0x01;
-                    init_config.Timing1 = 0x1c;
+                    initConfig.Timing0 = 0x01;
+                    initConfig.Timing1 = 0x1c;
                     break;
                 case "200K":
 
-                    init_config.Timing0 = 0x81;
-                    init_config.Timing1 = 0xfa;
+                    initConfig.Timing0 = 0x81;
+                    initConfig.Timing1 = 0xfa;
                     break;
                 case "125K":
 
-                    init_config.Timing0 = 0x03;
-                    init_config.Timing1 = 0x1c;
+                    initConfig.Timing0 = 0x03;
+                    initConfig.Timing1 = 0x1c;
                     break;
                 case "100K":
 
-                    init_config.Timing0 = 0x04;
-                    init_config.Timing1 = 0x1c;
+                    initConfig.Timing0 = 0x04;
+                    initConfig.Timing1 = 0x1c;
                     break;
                 case "80K":
 
-                    init_config.Timing0 = 0x83;
-                    init_config.Timing1 = 0xff;
+                    initConfig.Timing0 = 0x83;
+                    initConfig.Timing1 = 0xff;
                     break;
                 case "50K":
 
-                    init_config.Timing0 = 0x09;
-                    init_config.Timing1 = 0x1c;
+                    initConfig.Timing0 = 0x09;
+                    initConfig.Timing1 = 0x1c;
                     break;
 
             }
 
             // 初始化配置为正常模式
-            init_config.Mode = 0;
+            initConfig.Mode = 0;
 
             // 打开CAN
-            if (ECANDLL.OpenDevice(DeviceType, DeviceIndex, CANIndex) == ECAN.ECANStatus.STATUS_OK)
+            if (ECANDLL.OpenDevice(deviceType, deviceIndex, canIndex) == ECAN.ECANStatus.STATUS_OK)
             {
                 // 初始化CAN
-                if (ECANDLL.InitCAN(DeviceType, DeviceIndex, CANIndex, ref init_config) == ECAN.ECANStatus.STATUS_OK)
+                if (ECANDLL.InitCAN(deviceType, deviceIndex, canIndex, ref initConfig) == ECAN.ECANStatus.STATUS_OK)
                 {
                     // 设置CAN 滤波器的滤波范围 实测不起作用
-                    if (ECANDLL.SetReference(DeviceType, DeviceIndex, CANIndex, 1, ref FilterRecord) == ECAN.ECANStatus.STATUS_OK)
+                    if (ECANDLL.SetReference(deviceType, deviceIndex, canIndex, 1, ref filterRecord) == ECAN.ECANStatus.STATUS_OK)
                     {
                         // 启动USBCAN设备的通道0
-                        if (ECANDLL.StartCAN(DeviceType, DeviceIndex, CANIndex) == ECAN.ECANStatus.STATUS_OK)
+                        if (ECANDLL.StartCAN(deviceType, deviceIndex, canIndex) == ECAN.ECANStatus.STATUS_OK)
                         {
-                            if (ECANDLL.ReadBoardInfo(DeviceType, DeviceIndex, out BoardInfo) == ECAN.ECANStatus.STATUS_OK)
+                            if (ECANDLL.ReadBoardInfo(deviceType, deviceIndex, out boardInfo) == ECAN.ECANStatus.STATUS_OK)
                             {
                                 return true;
                             }
@@ -281,7 +287,7 @@ namespace ECANXCP
                 }
                 else
                 {
-                    ECANDLL.CloseDevice(DeviceType, DeviceIndex);
+                    ECANDLL.CloseDevice(deviceType, deviceIndex);
                     return false;
                 }
             }
@@ -298,7 +304,7 @@ namespace ECANXCP
         public bool GcCanUnInitialize()
         {
             // 关闭USBCAN设备的通道1
-            if (ECANDLL.CloseDevice(DeviceType, DeviceIndex) == ECAN.ECANStatus.STATUS_OK)
+            if (ECANDLL.CloseDevice(deviceType, deviceIndex) == ECAN.ECANStatus.STATUS_OK)
             {
                 return true;
             }
@@ -311,56 +317,56 @@ namespace ECANXCP
         /// <summary>
         /// 建立连接
         /// </summary>
-        /// <param name="Mode">模式</param>
-        /// <param name="CtoBuffer">返回数据</param>
-        /// <param name="CtoBufferLength">返回数据长度</param>
+        /// <param name="mode">模式</param>
+        /// <param name="ctoBuffer">返回数据</param>
+        /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Connect(byte Mode, out byte[] CtoBuffer, UInt16 CtoBufferLength)
+        public TXCPResult XCP_Connect(byte mode, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:CONNECT
             // 报文帧ID为
-            FrameInfo.ID = MasterID;
+            frameInfo.ID = masterID;
             // 发送帧类型 正常发送
-            FrameInfo.SendType = 0;
+            frameInfo.SendType = 0;
             // 是否为远程帧 0为数据帧
-            FrameInfo.RemoteFlag = 0;
+            frameInfo.RemoteFlag = 0;
             // 是否为扩展帧 0为标准帧，11位帧ID
-            FrameInfo.ExternFlag = 0;
+            frameInfo.ExternFlag = 0;
             // 数据长度
-            FrameInfo.DataLen = 2;
+            frameInfo.DataLen = 2;
             // CAN报文的数据
-            FrameInfo.data = new byte[8];
+            frameInfo.data = new byte[8];
             // 系统保留
             //CANObj.Reserved = new byte[3];
 
-            FrameInfo.data[0] = 0xFF;
-            FrameInfo.data[1] = Mode;
+            frameInfo.data[0] = 0xFF;
+            frameInfo.data[1] = mode;
 
-            if ((NumOfFrameTX = ECANDLL.Transmit(DeviceType, DeviceIndex, CANIndex, FrameInfo, 1)) != 1)// 如果发送命令失败
+            if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                CtoBuffer = new byte[CtoBufferLength];
+                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
             #region 读取应答数据
-            for (int i = 0; i <= 5; i++)// 尝试读取5次
+            for (int i = 0; i < 5; i++)// 尝试读取5次
             {
-                if ((NumOfFrameRX = ECANDLL.GetReceiveNum(DeviceType, DeviceIndex, CANIndex)) > 0)// 如果收到数据帧
+                if ((numOfFrameRX = ECANDLL.GetReceiveNum(deviceType, deviceIndex, canIndex)) > 0)// 如果收到数据帧
                 {
-                    NumOfFrameRX = ECANDLL.Receive(DeviceType, DeviceIndex, CANIndex, out FrameInfo, 1, 10);
-                    if (FrameInfo.data[0] == 0xFF)// Packet Identifier:RES
+                    numOfFrameRX = ECANDLL.Receive(deviceType, DeviceIndex, canIndex, out frameInfo, 1, 10);
+                    if (frameInfo.data[0] == 0xFF)// Packet Identifier:RES
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
                         return TXCPResult.XCP_ERR_OK;
                     }
-                    else if (FrameInfo.data[0] == 0xFE)// Packet Identifier:ERR
+                    else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         #region Error Code
-                        switch (FrameInfo.data[1])// 返回 Error Code
+                        switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
                                 return TXCPResult.XCP_ERR_CMD_SYNCH;
@@ -407,7 +413,7 @@ namespace ECANXCP
                     }
                     else
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
                         return TXCPResult.XCP_ERR_INVALID_PARAMETER;
                     }
@@ -418,7 +424,7 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            CtoBuffer = new byte[CtoBufferLength];
+            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -427,54 +433,54 @@ namespace ECANXCP
         /// <summary>
         /// 断开连接
         /// </summary>
-        /// <param name="CtoBuffer">返回数据</param>
-        /// <param name="CtoBufferLength">返回数据长度</param>
+        /// <param name="ctoBuffer">返回数据</param>
+        /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Disconnect(out byte[] CtoBuffer, UInt16 CtoBufferLength)
+        public TXCPResult XCP_Disconnect(out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:DISCONNECT
             // 报文帧ID为
-            FrameInfo.ID = MasterID;
+            frameInfo.ID = masterID;
             // 发送帧类型 正常发送
-            FrameInfo.SendType = 0;
+            frameInfo.SendType = 0;
             // 是否为远程帧 0为数据帧
-            FrameInfo.RemoteFlag = 0;
+            frameInfo.RemoteFlag = 0;
             // 是否为扩展帧 0为标准帧，11位帧ID
-            FrameInfo.ExternFlag = 0;
+            frameInfo.ExternFlag = 0;
             // 数据长度
-            FrameInfo.DataLen = 1;
+            frameInfo.DataLen = 1;
             // CAN报文的数据
-            FrameInfo.data = new byte[8];
+            frameInfo.data = new byte[8];
             // 系统保留
             //CANObj.Reserved = new byte[3];
 
-            FrameInfo.data[0] = 0xFE;
+            frameInfo.data[0] = 0xFE;
 
-            if ((NumOfFrameTX = ECANDLL.Transmit(DeviceType, DeviceIndex, CANIndex, FrameInfo, 1)) != 1)// 如果发送命令失败
+            if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                CtoBuffer = new byte[CtoBufferLength];
+                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
             #region 读取应答数据
-            for (int i = 0; i <= 5; i++)// 尝试读取5次
+            for (int i = 0; i < 5; i++)// 尝试读取5次
             {
-                if ((NumOfFrameRX = ECANDLL.GetReceiveNum(DeviceType, DeviceIndex, CANIndex)) > 0)// 如果收到数据帧
+                if ((numOfFrameRX = ECANDLL.GetReceiveNum(deviceType, deviceIndex, canIndex)) > 0)// 如果收到数据帧
                 {
-                    NumOfFrameRX = ECANDLL.Receive(DeviceType, DeviceIndex, CANIndex, out FrameInfo, 1, 10);
-                    if (FrameInfo.data[0] == 0xFF)// Packet Identifier:RES
+                    numOfFrameRX = ECANDLL.Receive(deviceType, deviceIndex, canIndex, out frameInfo, 1, 10);
+                    if (frameInfo.data[0] == 0xFF)// Packet Identifier:RES
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
                         return TXCPResult.XCP_ERR_OK;
                     }
-                    else if (FrameInfo.data[0] == 0xFE)// Packet Identifier:ERR
+                    else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         #region Error Code
-                        switch (FrameInfo.data[1])// 返回 Error Code
+                        switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
                                 return TXCPResult.XCP_ERR_CMD_SYNCH;
@@ -521,7 +527,7 @@ namespace ECANXCP
                     }
                     else
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
                         return TXCPResult.XCP_ERR_INVALID_PARAMETER;
                     }
@@ -532,7 +538,7 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            CtoBuffer = new byte[CtoBufferLength];
+            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -541,58 +547,58 @@ namespace ECANXCP
         /// <summary>
         /// 设置地址
         /// </summary>
-        /// <param name="AddrExtension">扩展地址</param>
-        /// <param name="Addr">地址</param>
-        /// <param name="CtoBuffer">返回数据</param>
-        /// <param name="CtoBufferLength">返回数据长度</param>
+        /// <param name="addrExtension">扩展地址</param>
+        /// <param name="addr">地址</param>
+        /// <param name="ctoBuffer">返回数据</param>
+        /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_SetMemoryTransferAddress(byte AddrExtension, UInt32 Addr, out byte[] CtoBuffer, UInt16 CtoBufferLength)
+        public TXCPResult XCP_SetMemoryTransferAddress(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:SET_MTA
             // 报文帧ID为
-            FrameInfo.ID = MasterID;
+            frameInfo.ID = masterID;
             // 发送帧类型 正常发送
-            FrameInfo.SendType = 0;
+            frameInfo.SendType = 0;
             // 是否为远程帧 0为数据帧
-            FrameInfo.RemoteFlag = 0;
+            frameInfo.RemoteFlag = 0;
             // 是否为扩展帧 0为标准帧，11位帧ID
-            FrameInfo.ExternFlag = 0;
+            frameInfo.ExternFlag = 0;
             // 数据长度
-            FrameInfo.DataLen = 8;
+            frameInfo.DataLen = 8;
             // CAN报文的数据
-            FrameInfo.data = new byte[8];
+            frameInfo.data = new byte[8];
             // 系统保留
             //CANObj.Reserved = new byte[3];
 
-            FrameInfo.data[0] = 0xF6;
-            FrameInfo.data[3] = AddrExtension;
-            Array.Copy(BitConverter.GetBytes(Addr), 0, FrameInfo.data, 4, 4);// 将Addr转换成数组并复制到FrameInfo的后四个元素
+            frameInfo.data[0] = 0xF6;
+            frameInfo.data[3] = addrExtension;
+            Array.Copy(BitConverter.GetBytes(addr), 0, frameInfo.data, 4, 4);// 将Addr转换成数组并复制到FrameInfo的后四个元素
 
-            if ((NumOfFrameTX = ECANDLL.Transmit(DeviceType, DeviceIndex, CANIndex, FrameInfo, 1)) != 1)// 如果发送命令失败
+            if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                CtoBuffer = new byte[CtoBufferLength];
+                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
             #region 读取应答数据
-            for (int i = 0; i <= 5; i++)// 尝试读取5次
+            for (int i = 0; i < 5; i++)// 尝试读取5次
             {
-                if ((NumOfFrameRX = ECANDLL.GetReceiveNum(DeviceType, DeviceIndex, CANIndex)) > 0)// 如果收到数据帧
+                if ((numOfFrameRX = ECANDLL.GetReceiveNum(deviceType, deviceIndex, canIndex)) > 0)// 如果收到数据帧
                 {
-                    NumOfFrameRX = ECANDLL.Receive(DeviceType, DeviceIndex, CANIndex, out FrameInfo, 1, 10);
-                    if (FrameInfo.data[0] == 0xFF)// Packet Identifier:RES
+                    numOfFrameRX = ECANDLL.Receive(deviceType, deviceIndex, canIndex, out frameInfo, 1, 10);
+                    if (frameInfo.data[0] == 0xFF)// Packet Identifier:RES
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
                         return TXCPResult.XCP_ERR_OK;
                     }
-                    else if (FrameInfo.data[0] == 0xFE)// Packet Identifier:ERR
+                    else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         #region Error Code
-                        switch (FrameInfo.data[1])// 返回 Error Code
+                        switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
                                 return TXCPResult.XCP_ERR_CMD_SYNCH;
@@ -639,7 +645,7 @@ namespace ECANXCP
                     }
                     else
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
                         return TXCPResult.XCP_ERR_INVALID_PARAMETER;
                     }
@@ -650,7 +656,7 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            CtoBuffer = new byte[CtoBufferLength];
+            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -659,59 +665,59 @@ namespace ECANXCP
         /// <summary>
         /// 上传数据
         /// </summary>
-        /// <param name="AddrExtension">扩展地址</param>
-        /// <param name="Addr">地址</param>
-        /// <param name="CtoBuffer">返回数据</param>
-        /// <param name="CtoBufferLength">返回数据长度</param>
+        /// <param name="addrExtension">扩展地址</param>
+        /// <param name="addr">地址</param>
+        /// <param name="ctoBuffer">返回数据</param>
+        /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_ShortUpload(byte AddrExtension, UInt32 Addr, out byte[] CtoBuffer, UInt16 CtoBufferLength)
+        public TXCPResult XCP_ShortUpload(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:SHORT_UPLOAD
             // 报文帧ID为
-            FrameInfo.ID = MasterID;
+            frameInfo.ID = masterID;
             // 发送帧类型 正常发送
-            FrameInfo.SendType = 0;
+            frameInfo.SendType = 0;
             // 是否为远程帧 0为数据帧
-            FrameInfo.RemoteFlag = 0;
+            frameInfo.RemoteFlag = 0;
             // 是否为扩展帧 0为标准帧，11位帧ID
-            FrameInfo.ExternFlag = 0;
+            frameInfo.ExternFlag = 0;
             // 数据长度
-            FrameInfo.DataLen = 8;
+            frameInfo.DataLen = 8;
             // CAN报文的数据
-            FrameInfo.data = new byte[8];
+            frameInfo.data = new byte[8];
             // 系统保留
             //CANObj.Reserved = new byte[3];
 
-            FrameInfo.data[0] = 0xF4;
-            FrameInfo.data[1] = (byte)BitConverter.GetBytes(Addr).Length;
-            FrameInfo.data[3] = AddrExtension;
-            Array.Copy(BitConverter.GetBytes(Addr), 0, FrameInfo.data, 4, 4);// 将Addr转换成数组并复制到FrameInfo的后四个元素
+            frameInfo.data[0] = 0xF4;
+            frameInfo.data[1] = (byte)BitConverter.GetBytes(addr).Length;
+            frameInfo.data[3] = addrExtension;
+            Array.Copy(BitConverter.GetBytes(addr), 0, frameInfo.data, 4, 4);// 将Addr转换成数组并复制到FrameInfo的后四个元素
 
-            if ((NumOfFrameTX = ECANDLL.Transmit(DeviceType, DeviceIndex, CANIndex, FrameInfo, 1)) != 1)// 如果发送命令失败
+            if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                CtoBuffer = new byte[CtoBufferLength];
+                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
             #region 读取应答数据
-            for (int i = 0; i <= 5; i++)// 尝试读取5次
+            for (int i = 0; i < 5; i++)// 尝试读取5次
             {
-                if ((NumOfFrameRX = ECANDLL.GetReceiveNum(DeviceType, DeviceIndex, CANIndex)) > 0)// 如果收到数据帧
+                if ((numOfFrameRX = ECANDLL.GetReceiveNum(deviceType, deviceIndex, canIndex)) > 0)// 如果收到数据帧
                 {
-                    NumOfFrameRX = ECANDLL.Receive(DeviceType, DeviceIndex, CANIndex, out FrameInfo, 1, 10);
-                    if (FrameInfo.data[0] == 0xFF)// Packet Identifier:RES
+                    numOfFrameRX = ECANDLL.Receive(deviceType, deviceIndex, canIndex, out frameInfo, 1, 10);
+                    if (frameInfo.data[0] == 0xFF)// Packet Identifier:RES
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
                         return TXCPResult.XCP_ERR_OK;
                     }
-                    else if (FrameInfo.data[0] == 0xFE)// Packet Identifier:ERR
+                    else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         #region Error Code
-                        switch (FrameInfo.data[1])// 返回 Error Code
+                        switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
                                 return TXCPResult.XCP_ERR_CMD_SYNCH;
@@ -758,7 +764,7 @@ namespace ECANXCP
                     }
                     else
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
                         return TXCPResult.XCP_ERR_INVALID_PARAMETER;
                     }
@@ -769,7 +775,7 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            CtoBuffer = new byte[CtoBufferLength];
+            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -778,57 +784,57 @@ namespace ECANXCP
         /// <summary>
         /// 下载
         /// </summary>
-        /// <param name="Data">下载的数据</param>
-        /// <param name="CtoBuffer">返回数据</param>
-        /// <param name="CtoBufferLength">返回数据长度</param>
+        /// <param name="data">下载的数据</param>
+        /// <param name="ctoBuffer">返回数据</param>
+        /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Download(byte[] Data, out byte[] CtoBuffer, UInt16 CtoBufferLength)
+        public TXCPResult XCP_Download(byte[] data, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:DOWNLOAD
             // 报文帧ID为
-            FrameInfo.ID = MasterID;
+            frameInfo.ID = masterID;
             // 发送帧类型 正常发送
-            FrameInfo.SendType = 0;
+            frameInfo.SendType = 0;
             // 是否为远程帧 0为数据帧
-            FrameInfo.RemoteFlag = 0;
+            frameInfo.RemoteFlag = 0;
             // 是否为扩展帧 0为标准帧，11位帧ID
-            FrameInfo.ExternFlag = 0;
+            frameInfo.ExternFlag = 0;
             // 数据长度
-            FrameInfo.DataLen = (byte)(Data.Length + 2);
+            frameInfo.DataLen = (byte)(data.Length + 2);
             // CAN报文的数据
-            FrameInfo.data = new byte[8];
+            frameInfo.data = new byte[8];
             // 系统保留
             //CANObj.Reserved = new byte[3];
 
-            FrameInfo.data[0] = 0xF0;
-            FrameInfo.data[1] = (byte)Data.Length;
-            Array.Copy(Data, 0, FrameInfo.data, 2, Data.Length);// 将Data复制到FrameInfo
+            frameInfo.data[0] = 0xF0;
+            frameInfo.data[1] = (byte)data.Length;
+            Array.Copy(data, 0, frameInfo.data, 2, data.Length);// 将Data复制到FrameInfo
 
-            if ((NumOfFrameTX = ECANDLL.Transmit(DeviceType, DeviceIndex, CANIndex, FrameInfo, 1)) != 1)// 如果发送命令失败
+            if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                CtoBuffer = new byte[CtoBufferLength];
+                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
             #region 读取应答数据
-            for (int i = 0; i <= 5; i++)// 尝试读取5次
+            for (int i = 0; i < 5; i++)// 尝试读取5次
             {
-                if ((NumOfFrameRX = ECANDLL.GetReceiveNum(DeviceType, DeviceIndex, CANIndex)) > 0)// 如果收到数据帧
+                if ((numOfFrameRX = ECANDLL.GetReceiveNum(deviceType, deviceIndex, canIndex)) > 0)// 如果收到数据帧
                 {
-                    NumOfFrameRX = ECANDLL.Receive(DeviceType, DeviceIndex, CANIndex, out FrameInfo, 1, 10);
-                    if (FrameInfo.data[0] == 0xFF)// Packet Identifier:RES
+                    numOfFrameRX = ECANDLL.Receive(deviceType, deviceIndex, canIndex, out frameInfo, 1, 10);
+                    if (frameInfo.data[0] == 0xFF)// Packet Identifier:RES
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
                         return TXCPResult.XCP_ERR_OK;
                     }
-                    else if (FrameInfo.data[0] == 0xFE)// Packet Identifier:ERR
+                    else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         #region Error Code
-                        switch (FrameInfo.data[1])// 返回 Error Code
+                        switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
                                 return TXCPResult.XCP_ERR_CMD_SYNCH;
@@ -875,7 +881,7 @@ namespace ECANXCP
                     }
                     else
                     {
-                        CtoBuffer = FrameInfo.data;// 回传接收到的数据
+                        ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
                         return TXCPResult.XCP_ERR_INVALID_PARAMETER;
                     }
@@ -886,7 +892,7 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            CtoBuffer = new byte[CtoBufferLength];
+            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
