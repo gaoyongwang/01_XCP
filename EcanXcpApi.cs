@@ -6,7 +6,7 @@ using ECAN;
 
 namespace ECANXCP
 {
-    public class XCPApi
+    public class EcanXcpApi
     {
         private UInt32 deviceType;// 设备类型号，USBCAN I 选择3，USBCAN II 选择4
         private UInt32 deviceIndex;// 设备索引号，当只有一个设备时，索引号为0，有两个时可以为0或1
@@ -29,7 +29,7 @@ namespace ECANXCP
         /// <summary>
         /// 定义错误码
         /// </summary>
-        public enum TXCPResult : uint
+        public enum EcanXcpResult : uint
         {
             // Codes for not sucessfully executed XCP commands
             //
@@ -153,7 +153,7 @@ namespace ECANXCP
             XCP_ERR_TRANSPORT_CHANNEL = 0x80000000
         }
 
-        public XCPApi()
+        public EcanXcpApi()
         {
             this.deviceType = 3;
             this.deviceIndex = 0;
@@ -321,7 +321,7 @@ namespace ECANXCP
         /// <param name="ctoBuffer">返回数据</param>
         /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Connect(byte mode, out byte[] ctoBuffer, UInt16 ctoBufferLength)
+        public EcanXcpResult XCP_Connect(byte mode, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:CONNECT
             // 报文帧ID为
@@ -346,7 +346,7 @@ namespace ECANXCP
             {
                 ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
-                return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
+                return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
@@ -360,7 +360,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
-                        return TXCPResult.XCP_ERR_OK;
+                        return EcanXcpResult.XCP_ERR_OK;
                     }
                     else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
@@ -369,45 +369,45 @@ namespace ECANXCP
                         switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
-                                return TXCPResult.XCP_ERR_CMD_SYNCH;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNCH;
                             case 0x10:
-                                return TXCPResult.XCP_ERR_CMD_BUSY;
+                                return EcanXcpResult.XCP_ERR_CMD_BUSY;
                             case 0x11:
-                                return TXCPResult.XCP_ERR_DAQ_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_DAQ_ACTIVE;
                             case 0x12:
-                                return TXCPResult.XCP_ERR_PGM_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_PGM_ACTIVE;
                             case 0x20:
-                                return TXCPResult.XCP_ERR_CMD_UNKNOWN;
+                                return EcanXcpResult.XCP_ERR_CMD_UNKNOWN;
                             case 0x21:
-                                return TXCPResult.XCP_ERR_CMD_SYNTAX;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNTAX;
                             case 0x22:
-                                return TXCPResult.XCP_ERR_OUT_OF_RANGE;
+                                return EcanXcpResult.XCP_ERR_OUT_OF_RANGE;
                             case 0x23:
-                                return TXCPResult.XCP_ERR_WRITE_PROTECTED;
+                                return EcanXcpResult.XCP_ERR_WRITE_PROTECTED;
                             case 0x24:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x25:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x26:
-                                return TXCPResult.XCP_ERR_PAGE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_PAGE_NOT_VALID;
                             case 0x27:
-                                return TXCPResult.XCP_ERR_MODE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_MODE_NOT_VALID;
                             case 0x28:
-                                return TXCPResult.XCP_ERR_SEGMENT_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_SEGMENT_NOT_VALID;
                             case 0x29:
-                                return TXCPResult.XCP_ERR_SEQUENCE;
+                                return EcanXcpResult.XCP_ERR_SEQUENCE;
                             case 0x2A:
-                                return TXCPResult.XCP_ERR_DAQ_CONFIG;
+                                return EcanXcpResult.XCP_ERR_DAQ_CONFIG;
                             case 0x30:
-                                return TXCPResult.XCP_ERR_MEMORY_OVERFLOW;
+                                return EcanXcpResult.XCP_ERR_MEMORY_OVERFLOW;
                             case 0x31:
-                                return TXCPResult.XCP_ERR_GENERIC;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             case 0x32:
-                                return TXCPResult.XCP_ERR_VERIFY;
+                                return EcanXcpResult.XCP_ERR_VERIFY;
                             case 0x33:
-                                return TXCPResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
+                                return EcanXcpResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
                             default:
-                                return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                                return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                         }
                         #endregion
                     }
@@ -415,7 +415,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
-                        return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                        return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                     }
                 }
                 else//如果没有数据帧，等待1ms
@@ -426,7 +426,7 @@ namespace ECANXCP
             // 尝试5次，超时
             ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
-            return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
+            return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
 
@@ -436,7 +436,7 @@ namespace ECANXCP
         /// <param name="ctoBuffer">返回数据</param>
         /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Disconnect(out byte[] ctoBuffer, UInt16 ctoBufferLength)
+        public EcanXcpResult XCP_Disconnect(out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:DISCONNECT
             // 报文帧ID为
@@ -460,7 +460,7 @@ namespace ECANXCP
             {
                 ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
-                return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
+                return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
@@ -474,7 +474,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
-                        return TXCPResult.XCP_ERR_OK;
+                        return EcanXcpResult.XCP_ERR_OK;
                     }
                     else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
@@ -483,45 +483,45 @@ namespace ECANXCP
                         switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
-                                return TXCPResult.XCP_ERR_CMD_SYNCH;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNCH;
                             case 0x10:
-                                return TXCPResult.XCP_ERR_CMD_BUSY;
+                                return EcanXcpResult.XCP_ERR_CMD_BUSY;
                             case 0x11:
-                                return TXCPResult.XCP_ERR_DAQ_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_DAQ_ACTIVE;
                             case 0x12:
-                                return TXCPResult.XCP_ERR_PGM_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_PGM_ACTIVE;
                             case 0x20:
-                                return TXCPResult.XCP_ERR_CMD_UNKNOWN;
+                                return EcanXcpResult.XCP_ERR_CMD_UNKNOWN;
                             case 0x21:
-                                return TXCPResult.XCP_ERR_CMD_SYNTAX;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNTAX;
                             case 0x22:
-                                return TXCPResult.XCP_ERR_OUT_OF_RANGE;
+                                return EcanXcpResult.XCP_ERR_OUT_OF_RANGE;
                             case 0x23:
-                                return TXCPResult.XCP_ERR_WRITE_PROTECTED;
+                                return EcanXcpResult.XCP_ERR_WRITE_PROTECTED;
                             case 0x24:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x25:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x26:
-                                return TXCPResult.XCP_ERR_PAGE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_PAGE_NOT_VALID;
                             case 0x27:
-                                return TXCPResult.XCP_ERR_MODE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_MODE_NOT_VALID;
                             case 0x28:
-                                return TXCPResult.XCP_ERR_SEGMENT_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_SEGMENT_NOT_VALID;
                             case 0x29:
-                                return TXCPResult.XCP_ERR_SEQUENCE;
+                                return EcanXcpResult.XCP_ERR_SEQUENCE;
                             case 0x2A:
-                                return TXCPResult.XCP_ERR_DAQ_CONFIG;
+                                return EcanXcpResult.XCP_ERR_DAQ_CONFIG;
                             case 0x30:
-                                return TXCPResult.XCP_ERR_MEMORY_OVERFLOW;
+                                return EcanXcpResult.XCP_ERR_MEMORY_OVERFLOW;
                             case 0x31:
-                                return TXCPResult.XCP_ERR_GENERIC;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             case 0x32:
-                                return TXCPResult.XCP_ERR_VERIFY;
+                                return EcanXcpResult.XCP_ERR_VERIFY;
                             case 0x33:
-                                return TXCPResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
+                                return EcanXcpResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
                             default:
-                                return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                                return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                         }
                         #endregion
                     }
@@ -529,7 +529,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
-                        return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                        return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                     }
                 }
                 else//如果没有数据帧，等待1ms
@@ -540,7 +540,7 @@ namespace ECANXCP
             // 尝试5次，超时
             ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
-            return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
+            return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
 
@@ -552,7 +552,7 @@ namespace ECANXCP
         /// <param name="ctoBuffer">返回数据</param>
         /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_SetMemoryTransferAddress(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
+        public EcanXcpResult XCP_SetMemoryTransferAddress(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:SET_MTA
             // 报文帧ID为
@@ -578,7 +578,7 @@ namespace ECANXCP
             {
                 ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
-                return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
+                return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
@@ -592,7 +592,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
-                        return TXCPResult.XCP_ERR_OK;
+                        return EcanXcpResult.XCP_ERR_OK;
                     }
                     else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
@@ -601,45 +601,45 @@ namespace ECANXCP
                         switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
-                                return TXCPResult.XCP_ERR_CMD_SYNCH;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNCH;
                             case 0x10:
-                                return TXCPResult.XCP_ERR_CMD_BUSY;
+                                return EcanXcpResult.XCP_ERR_CMD_BUSY;
                             case 0x11:
-                                return TXCPResult.XCP_ERR_DAQ_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_DAQ_ACTIVE;
                             case 0x12:
-                                return TXCPResult.XCP_ERR_PGM_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_PGM_ACTIVE;
                             case 0x20:
-                                return TXCPResult.XCP_ERR_CMD_UNKNOWN;
+                                return EcanXcpResult.XCP_ERR_CMD_UNKNOWN;
                             case 0x21:
-                                return TXCPResult.XCP_ERR_CMD_SYNTAX;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNTAX;
                             case 0x22:
-                                return TXCPResult.XCP_ERR_OUT_OF_RANGE;
+                                return EcanXcpResult.XCP_ERR_OUT_OF_RANGE;
                             case 0x23:
-                                return TXCPResult.XCP_ERR_WRITE_PROTECTED;
+                                return EcanXcpResult.XCP_ERR_WRITE_PROTECTED;
                             case 0x24:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x25:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x26:
-                                return TXCPResult.XCP_ERR_PAGE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_PAGE_NOT_VALID;
                             case 0x27:
-                                return TXCPResult.XCP_ERR_MODE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_MODE_NOT_VALID;
                             case 0x28:
-                                return TXCPResult.XCP_ERR_SEGMENT_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_SEGMENT_NOT_VALID;
                             case 0x29:
-                                return TXCPResult.XCP_ERR_SEQUENCE;
+                                return EcanXcpResult.XCP_ERR_SEQUENCE;
                             case 0x2A:
-                                return TXCPResult.XCP_ERR_DAQ_CONFIG;
+                                return EcanXcpResult.XCP_ERR_DAQ_CONFIG;
                             case 0x30:
-                                return TXCPResult.XCP_ERR_MEMORY_OVERFLOW;
+                                return EcanXcpResult.XCP_ERR_MEMORY_OVERFLOW;
                             case 0x31:
-                                return TXCPResult.XCP_ERR_GENERIC;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             case 0x32:
-                                return TXCPResult.XCP_ERR_VERIFY;
+                                return EcanXcpResult.XCP_ERR_VERIFY;
                             case 0x33:
-                                return TXCPResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
+                                return EcanXcpResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
                             default:
-                                return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                                return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                         }
                         #endregion
                     }
@@ -647,7 +647,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
-                        return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                        return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                     }
                 }
                 else//如果没有数据帧，等待1ms
@@ -658,7 +658,7 @@ namespace ECANXCP
             // 尝试5次，超时
             ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
-            return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
+            return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
 
@@ -670,7 +670,7 @@ namespace ECANXCP
         /// <param name="ctoBuffer">返回数据</param>
         /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_ShortUpload(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
+        public EcanXcpResult XCP_ShortUpload(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:SHORT_UPLOAD
             // 报文帧ID为
@@ -697,7 +697,7 @@ namespace ECANXCP
             {
                 ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
-                return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
+                return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
@@ -711,7 +711,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
-                        return TXCPResult.XCP_ERR_OK;
+                        return EcanXcpResult.XCP_ERR_OK;
                     }
                     else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
@@ -720,45 +720,45 @@ namespace ECANXCP
                         switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
-                                return TXCPResult.XCP_ERR_CMD_SYNCH;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNCH;
                             case 0x10:
-                                return TXCPResult.XCP_ERR_CMD_BUSY;
+                                return EcanXcpResult.XCP_ERR_CMD_BUSY;
                             case 0x11:
-                                return TXCPResult.XCP_ERR_DAQ_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_DAQ_ACTIVE;
                             case 0x12:
-                                return TXCPResult.XCP_ERR_PGM_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_PGM_ACTIVE;
                             case 0x20:
-                                return TXCPResult.XCP_ERR_CMD_UNKNOWN;
+                                return EcanXcpResult.XCP_ERR_CMD_UNKNOWN;
                             case 0x21:
-                                return TXCPResult.XCP_ERR_CMD_SYNTAX;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNTAX;
                             case 0x22:
-                                return TXCPResult.XCP_ERR_OUT_OF_RANGE;
+                                return EcanXcpResult.XCP_ERR_OUT_OF_RANGE;
                             case 0x23:
-                                return TXCPResult.XCP_ERR_WRITE_PROTECTED;
+                                return EcanXcpResult.XCP_ERR_WRITE_PROTECTED;
                             case 0x24:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x25:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x26:
-                                return TXCPResult.XCP_ERR_PAGE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_PAGE_NOT_VALID;
                             case 0x27:
-                                return TXCPResult.XCP_ERR_MODE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_MODE_NOT_VALID;
                             case 0x28:
-                                return TXCPResult.XCP_ERR_SEGMENT_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_SEGMENT_NOT_VALID;
                             case 0x29:
-                                return TXCPResult.XCP_ERR_SEQUENCE;
+                                return EcanXcpResult.XCP_ERR_SEQUENCE;
                             case 0x2A:
-                                return TXCPResult.XCP_ERR_DAQ_CONFIG;
+                                return EcanXcpResult.XCP_ERR_DAQ_CONFIG;
                             case 0x30:
-                                return TXCPResult.XCP_ERR_MEMORY_OVERFLOW;
+                                return EcanXcpResult.XCP_ERR_MEMORY_OVERFLOW;
                             case 0x31:
-                                return TXCPResult.XCP_ERR_GENERIC;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             case 0x32:
-                                return TXCPResult.XCP_ERR_VERIFY;
+                                return EcanXcpResult.XCP_ERR_VERIFY;
                             case 0x33:
-                                return TXCPResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
+                                return EcanXcpResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
                             default:
-                                return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                                return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                         }
                         #endregion
                     }
@@ -766,7 +766,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
-                        return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                        return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                     }
                 }
                 else//如果没有数据帧，等待1ms
@@ -777,7 +777,7 @@ namespace ECANXCP
             // 尝试5次，超时
             ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
-            return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
+            return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
 
@@ -788,7 +788,7 @@ namespace ECANXCP
         /// <param name="ctoBuffer">返回数据</param>
         /// <param name="ctoBufferLength">返回数据长度</param>
         /// <returns></returns>
-        public TXCPResult XCP_Download(byte[] data, out byte[] ctoBuffer, UInt16 ctoBufferLength)
+        public EcanXcpResult XCP_Download(byte[] data, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
             #region Packet Identifier:CMD Command:DOWNLOAD
             // 报文帧ID为
@@ -814,7 +814,7 @@ namespace ECANXCP
             {
                 ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
-                return TXCPResult.XCP_ERR_NOT_IMPLEMENTED;
+                return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
             #endregion
 
@@ -828,7 +828,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Acknowledge / no error
-                        return TXCPResult.XCP_ERR_OK;
+                        return EcanXcpResult.XCP_ERR_OK;
                     }
                     else if (frameInfo.data[0] == 0xFE)// Packet Identifier:ERR
                     {
@@ -837,45 +837,45 @@ namespace ECANXCP
                         switch (frameInfo.data[1])// 返回 Error Code
                         {
                             case 0:
-                                return TXCPResult.XCP_ERR_CMD_SYNCH;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNCH;
                             case 0x10:
-                                return TXCPResult.XCP_ERR_CMD_BUSY;
+                                return EcanXcpResult.XCP_ERR_CMD_BUSY;
                             case 0x11:
-                                return TXCPResult.XCP_ERR_DAQ_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_DAQ_ACTIVE;
                             case 0x12:
-                                return TXCPResult.XCP_ERR_PGM_ACTIVE;
+                                return EcanXcpResult.XCP_ERR_PGM_ACTIVE;
                             case 0x20:
-                                return TXCPResult.XCP_ERR_CMD_UNKNOWN;
+                                return EcanXcpResult.XCP_ERR_CMD_UNKNOWN;
                             case 0x21:
-                                return TXCPResult.XCP_ERR_CMD_SYNTAX;
+                                return EcanXcpResult.XCP_ERR_CMD_SYNTAX;
                             case 0x22:
-                                return TXCPResult.XCP_ERR_OUT_OF_RANGE;
+                                return EcanXcpResult.XCP_ERR_OUT_OF_RANGE;
                             case 0x23:
-                                return TXCPResult.XCP_ERR_WRITE_PROTECTED;
+                                return EcanXcpResult.XCP_ERR_WRITE_PROTECTED;
                             case 0x24:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x25:
-                                return TXCPResult.XCP_ERR_ACCESS_DENIED;
+                                return EcanXcpResult.XCP_ERR_ACCESS_DENIED;
                             case 0x26:
-                                return TXCPResult.XCP_ERR_PAGE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_PAGE_NOT_VALID;
                             case 0x27:
-                                return TXCPResult.XCP_ERR_MODE_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_MODE_NOT_VALID;
                             case 0x28:
-                                return TXCPResult.XCP_ERR_SEGMENT_NOT_VALID;
+                                return EcanXcpResult.XCP_ERR_SEGMENT_NOT_VALID;
                             case 0x29:
-                                return TXCPResult.XCP_ERR_SEQUENCE;
+                                return EcanXcpResult.XCP_ERR_SEQUENCE;
                             case 0x2A:
-                                return TXCPResult.XCP_ERR_DAQ_CONFIG;
+                                return EcanXcpResult.XCP_ERR_DAQ_CONFIG;
                             case 0x30:
-                                return TXCPResult.XCP_ERR_MEMORY_OVERFLOW;
+                                return EcanXcpResult.XCP_ERR_MEMORY_OVERFLOW;
                             case 0x31:
-                                return TXCPResult.XCP_ERR_GENERIC;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             case 0x32:
-                                return TXCPResult.XCP_ERR_VERIFY;
+                                return EcanXcpResult.XCP_ERR_VERIFY;
                             case 0x33:
-                                return TXCPResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
+                                return EcanXcpResult.XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE;
                             default:
-                                return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                                return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                         }
                         #endregion
                     }
@@ -883,7 +883,7 @@ namespace ECANXCP
                     {
                         ctoBuffer = frameInfo.data;// 回传接收到的数据
                         // Invalid parameter value
-                        return TXCPResult.XCP_ERR_INVALID_PARAMETER;
+                        return EcanXcpResult.XCP_ERR_INVALID_PARAMETER;
                     }
                 }
                 else//如果没有数据帧，等待1ms
@@ -894,7 +894,7 @@ namespace ECANXCP
             // 尝试5次，超时
             ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
-            return TXCPResult.XCP_ERR_INTERNAL_TIMEOUT;
+            return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
     }

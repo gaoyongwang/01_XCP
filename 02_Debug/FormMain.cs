@@ -15,10 +15,10 @@ namespace WindowsFormsApplication
     public partial class FormMain : Form
     {
         BOARD_INFO boardInfo = new BOARD_INFO();
-        XCPApi xcpapi = new XCPApi();
+        EcanXcpApi xcpapi = new EcanXcpApi();
         byte[] msgTemp = new byte[8];
 
-        ECANXCP.XCPApi.TXCPResult result;
+        ECANXCP.EcanXcpApi.EcanXcpResult result;
         
         public FormMain()
         {
