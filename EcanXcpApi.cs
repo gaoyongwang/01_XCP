@@ -28,133 +28,6 @@ namespace ECANXCP
         public UInt32 MasterID { get; set; }
         public UInt32 SlaveID { get; set; }
 
-        /// <summary>
-        /// 定义错误码
-        /// </summary>
-        public enum EcanXcpResult : uint
-        {
-            // Codes for not sucessfully executed XCP commands
-            //
-            /// <summary>
-            /// Command processor synchronization
-            /// </summary>
-            XCP_ERR_CMD_SYNCH = 0,
-            /// <summary>
-            /// Command was not executed
-            /// </summary>
-            XCP_ERR_CMD_BUSY = 0x10,
-            /// <summary>
-            /// Command rejected because DAQ is running
-            /// </summary>
-            XCP_ERR_DAQ_ACTIVE = 0x11,
-            /// <summary>
-            /// Command rejected because PGM is running
-            /// </summary>
-            XCP_ERR_PGM_ACTIVE = 0x12,
-            /// <summary>
-            /// Unknown command or not implemented optional command
-            /// </summary>
-            XCP_ERR_CMD_UNKNOWN = 0x20,
-            /// <summary>
-            /// Command syntax invalid
-            /// </summary>
-            XCP_ERR_CMD_SYNTAX = 0x21,
-            /// <summary>
-            /// Command syntax valid but command parameter(s) out of range
-            /// </summary>
-            XCP_ERR_OUT_OF_RANGE = 0x22,
-            /// <summary>
-            /// The memory location is write protected
-            /// </summary>
-            XCP_ERR_WRITE_PROTECTED = 0x23,
-            /// <summary>
-            /// The memory location is not accessible
-            /// </summary>
-            XCP_ERR_ACCESS_DENIED = 0x24,
-            /// <summary>
-            /// Access denied,Seed & Key is required
-            /// </summary>
-            XCP_ERR_ACCESS_LOCKED = 0x25,
-            /// <summary>
-            /// Selected page not available
-            /// </summary>
-            XCP_ERR_PAGE_NOT_VALID = 0x26,
-            /// <summary>
-            /// Selected page mode not available
-            /// </summary>
-            XCP_ERR_MODE_NOT_VALID = 0x27,
-            /// <summary>
-            /// Selected segment not valid
-            /// </summary>
-            XCP_ERR_SEGMENT_NOT_VALID = 0x28,
-            /// <summary>
-            /// Sequence error
-            /// </summary>
-            XCP_ERR_SEQUENCE = 0x29,
-            /// <summary>
-            /// DAQ configuration not valid
-            /// </summary>
-            XCP_ERR_DAQ_CONFIG = 0x2A,
-            /// <summary>
-            /// Memory overflow error
-            /// </summary>
-            XCP_ERR_MEMORY_OVERFLOW = 0x30,
-            /// <summary>
-            /// Generic error
-            /// </summary>
-            XCP_ERR_GENERIC = 0x31,
-            /// <summary>
-            /// The slave internal program verify routine detects an error
-            /// </summary>
-            XCP_ERR_VERIFY = 0x32,
-            /// <summary>
-            /// Access to the requested resource is temporary not possible
-            /// </summary>
-            XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE = 0x33,
-
-            // API return error codes
-            //
-            /// <summary>
-            /// Acknowledge / no error
-            /// </summary>
-            XCP_ERR_OK = (1 << 8),
-            /// <summary>
-            /// Function not available / Operation not implemented
-            /// </summary>
-            XCP_ERR_NOT_IMPLEMENTED = (2 << 8),
-            /// <summary>
-            /// Invalid parameter value
-            /// </summary>
-            XCP_ERR_INVALID_PARAMETER = (3 << 8),
-            /// <summary>
-            /// The maximum amount of registered Slave channels was reached
-            /// </summary>
-            XCP_ERR_MAX_CHANNELS = (4 << 8),
-            /// <summary>
-            /// The given handle is invalid
-            /// </summary>
-            XCP_ERROR_INVALID_HANDLE = (5 << 8),
-            /// <summary>
-            /// A timeout was reached by calling a function synchronously
-            /// </summary>
-            XCP_ERR_INTERNAL_TIMEOUT = (6 << 8),
-            /// <summary>
-            /// The queue being referred is empty
-            /// </summary>
-            XCP_ERR_QUEUE_EMPTY = (7 << 8),
-            /// <summary>
-            /// The size of the given buffer, is not big enough
-            /// </summary>
-            XCP_ERR_INSUFFICIENT_BUFFER = (8 << 8),
-
-            // Transport protocol error flags
-            //
-            /// <summary>
-            /// Flag for a specific error within the underlying transport channel 
-            /// </summary>
-            XCP_ERR_TRANSPORT_CHANNEL = 0x80000000
-        }
-
         public EcanXcpApi()
         {
             this.deviceType = 3;
@@ -900,5 +773,132 @@ namespace ECANXCP
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
         }
+    }
+
+    /// <summary>
+    /// 定义错误码
+    /// </summary>
+    public enum EcanXcpResult : uint
+    {
+        // Codes for not sucessfully executed XCP commands
+        //
+        /// <summary>
+        /// Command processor synchronization
+        /// </summary>
+        XCP_ERR_CMD_SYNCH = 0,
+        /// <summary>
+        /// Command was not executed
+        /// </summary>
+        XCP_ERR_CMD_BUSY = 0x10,
+        /// <summary>
+        /// Command rejected because DAQ is running
+        /// </summary>
+        XCP_ERR_DAQ_ACTIVE = 0x11,
+        /// <summary>
+        /// Command rejected because PGM is running
+        /// </summary>
+        XCP_ERR_PGM_ACTIVE = 0x12,
+        /// <summary>
+        /// Unknown command or not implemented optional command
+        /// </summary>
+        XCP_ERR_CMD_UNKNOWN = 0x20,
+        /// <summary>
+        /// Command syntax invalid
+        /// </summary>
+        XCP_ERR_CMD_SYNTAX = 0x21,
+        /// <summary>
+        /// Command syntax valid but command parameter(s) out of range
+        /// </summary>
+        XCP_ERR_OUT_OF_RANGE = 0x22,
+        /// <summary>
+        /// The memory location is write protected
+        /// </summary>
+        XCP_ERR_WRITE_PROTECTED = 0x23,
+        /// <summary>
+        /// The memory location is not accessible
+        /// </summary>
+        XCP_ERR_ACCESS_DENIED = 0x24,
+        /// <summary>
+        /// Access denied,Seed & Key is required
+        /// </summary>
+        XCP_ERR_ACCESS_LOCKED = 0x25,
+        /// <summary>
+        /// Selected page not available
+        /// </summary>
+        XCP_ERR_PAGE_NOT_VALID = 0x26,
+        /// <summary>
+        /// Selected page mode not available
+        /// </summary>
+        XCP_ERR_MODE_NOT_VALID = 0x27,
+        /// <summary>
+        /// Selected segment not valid
+        /// </summary>
+        XCP_ERR_SEGMENT_NOT_VALID = 0x28,
+        /// <summary>
+        /// Sequence error
+        /// </summary>
+        XCP_ERR_SEQUENCE = 0x29,
+        /// <summary>
+        /// DAQ configuration not valid
+        /// </summary>
+        XCP_ERR_DAQ_CONFIG = 0x2A,
+        /// <summary>
+        /// Memory overflow error
+        /// </summary>
+        XCP_ERR_MEMORY_OVERFLOW = 0x30,
+        /// <summary>
+        /// Generic error
+        /// </summary>
+        XCP_ERR_GENERIC = 0x31,
+        /// <summary>
+        /// The slave internal program verify routine detects an error
+        /// </summary>
+        XCP_ERR_VERIFY = 0x32,
+        /// <summary>
+        /// Access to the requested resource is temporary not possible
+        /// </summary>
+        XCP_ERR_RESOURCE_TEMPORARY_NOT_ACCESSIBLE = 0x33,
+
+        // API return error codes
+        //
+        /// <summary>
+        /// Acknowledge / no error
+        /// </summary>
+        XCP_ERR_OK = (1 << 8),
+        /// <summary>
+        /// Function not available / Operation not implemented
+        /// </summary>
+        XCP_ERR_NOT_IMPLEMENTED = (2 << 8),
+        /// <summary>
+        /// Invalid parameter value
+        /// </summary>
+        XCP_ERR_INVALID_PARAMETER = (3 << 8),
+        /// <summary>
+        /// The maximum amount of registered Slave channels was reached
+        /// </summary>
+        XCP_ERR_MAX_CHANNELS = (4 << 8),
+        /// <summary>
+        /// The given handle is invalid
+        /// </summary>
+        XCP_ERROR_INVALID_HANDLE = (5 << 8),
+        /// <summary>
+        /// A timeout was reached by calling a function synchronously
+        /// </summary>
+        XCP_ERR_INTERNAL_TIMEOUT = (6 << 8),
+        /// <summary>
+        /// The queue being referred is empty
+        /// </summary>
+        XCP_ERR_QUEUE_EMPTY = (7 << 8),
+        /// <summary>
+        /// The size of the given buffer, is not big enough
+        /// </summary>
+        XCP_ERR_INSUFFICIENT_BUFFER = (8 << 8),
+
+        // Transport protocol error flags
+        //
+        /// <summary>
+        /// Flag for a specific error within the underlying transport channel 
+        /// </summary>
+        XCP_ERR_TRANSPORT_CHANNEL = 0x80000000
     }
 }

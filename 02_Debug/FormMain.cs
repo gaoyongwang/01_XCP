@@ -18,7 +18,7 @@ namespace WindowsFormsApplication
         EcanXcpApi xcpapi = new EcanXcpApi();
         byte[] msgTemp = new byte[8];
 
-        ECANXCP.EcanXcpApi.EcanXcpResult result;
+        EcanXcpResult result;
         
         public FormMain()
         {
@@ -40,7 +40,7 @@ namespace WindowsFormsApplication
 
         private void Init_Click(object sender, EventArgs e)
         {
-            if (xcpapi.GcCanInitialize(out boardInfo) == EcanXcpApi.EcanXcpResult.XCP_ERR_OK)
+            if (xcpapi.GcCanInitialize(out boardInfo) == EcanXcpResult.XCP_ERR_OK)
             {
                 PrintLog("硬件版本号：" + boardInfo.hw_Version.ToString());
                 PrintLog("固件版本号：" + boardInfo.fw_Version.ToString());
@@ -61,7 +61,7 @@ namespace WindowsFormsApplication
 
         private void DeInit_Click(object sender, EventArgs e)
         {
-            if (xcpapi.GcCanUnInitialize() == EcanXcpApi.EcanXcpResult.XCP_ERR_OK)
+            if (xcpapi.GcCanUnInitialize() == EcanXcpResult.XCP_ERR_OK)
             {
                 PrintLog("UnInitialize success!");
             }
