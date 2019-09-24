@@ -23,6 +23,7 @@ namespace WindowsFormsApplication
         public FormMain()
         {
             InitializeComponent();
+            xcpapi.Baudrate = "500K";
             xcpapi.MasterID = 0x7FB;
             xcpapi.SlaveID = 0x7FC;
         }
@@ -39,7 +40,7 @@ namespace WindowsFormsApplication
 
         private void Init_Click(object sender, EventArgs e)
         {
-            if (xcpapi.GcCanInitialize("500K", out boardInfo))
+            if (xcpapi.GcCanInitialize(out boardInfo))
             {
                 PrintLog("硬件版本号：" + boardInfo.hw_Version.ToString());
                 PrintLog("固件版本号：" + boardInfo.fw_Version.ToString());

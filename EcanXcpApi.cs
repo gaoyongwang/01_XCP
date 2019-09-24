@@ -11,6 +11,7 @@ namespace ECANXCP
         private UInt32 deviceType;// 设备类型号，USBCAN I 选择3，USBCAN II 选择4
         private UInt32 deviceIndex;// 设备索引号，当只有一个设备时，索引号为0，有两个时可以为0或1
         private UInt32 canIndex;// 第几路CAN，即对应卡的CAN通道号，CAN0为0，CAN1为1
+        private string baudrate;// 波特率
         private UInt32 masterID;// 主设备ID
         private UInt32 slaveID;// 从设备ID
         INIT_CONFIG initConfig = new INIT_CONFIG();// 创建CAN初始化配置结构体
@@ -23,6 +24,7 @@ namespace ECANXCP
         public UInt32 DeviceType { get; set; }
         public UInt32 DeviceIndex { get; set; }
         public UInt32 CanIndex { get; set; }
+        public string Baudrate { get; set; }
         public UInt32 MasterID { get; set; }
         public UInt32 SlaveID { get; set; }
 
@@ -158,6 +160,7 @@ namespace ECANXCP
             this.deviceType = 3;
             this.deviceIndex = 0;
             this.canIndex = 0;
+            this.baudrate = "500K";
             this.masterID = 0x7FB;
             this.slaveID = 0x7FC;
         }
@@ -168,7 +171,7 @@ namespace ECANXCP
         /// <param name="baudrate">波特率</param>
         /// <param name="boardInfo">设备信息</param>
         /// <returns></returns>
-        public bool GcCanInitialize(string baudrate, out BOARD_INFO boardInfo)
+        public bool GcCanInitialize(out BOARD_INFO boardInfo)
         {
             boardInfo.hw_Version = 0x00;
             boardInfo.fw_Version = 0x00;
