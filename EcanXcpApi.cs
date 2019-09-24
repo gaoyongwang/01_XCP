@@ -171,7 +171,7 @@ namespace ECANXCP
         /// <param name="baudrate">波特率</param>
         /// <param name="boardInfo">设备信息</param>
         /// <returns></returns>
-        public bool GcCanInitialize(out BOARD_INFO boardInfo)
+        public EcanXcpResult GcCanInitialize(out BOARD_INFO boardInfo)
         {
             boardInfo.hw_Version = 0x00;
             boardInfo.fw_Version = 0x00;
@@ -271,32 +271,32 @@ namespace ECANXCP
                         {
                             if (ECANDLL.ReadBoardInfo(deviceType, deviceIndex, out boardInfo) == ECAN.ECANStatus.STATUS_OK)
                             {
-                                return true;
+                                return EcanXcpResult.XCP_ERR_OK;
                             }
                             else
                             {
-                                return false;
+                                return EcanXcpResult.XCP_ERR_GENERIC;
                             }
                         }
                         else
                         {
-                            return false;
+                            return EcanXcpResult.XCP_ERR_GENERIC;
                         }
                     }
                     else
                     {
-                        return false;
+                        return EcanXcpResult.XCP_ERR_GENERIC;
                     }
                 }
                 else
                 {
                     ECANDLL.CloseDevice(deviceType, deviceIndex);
-                    return false;
+                    return EcanXcpResult.XCP_ERR_GENERIC;
                 }
             }
             else
             {
-                return false;
+                return EcanXcpResult.XCP_ERR_GENERIC;
             }
         }
 
@@ -304,16 +304,16 @@ namespace ECANXCP
         /// 去初始化
         /// </summary>
         /// <returns></returns>
-        public bool GcCanUnInitialize()
+        public EcanXcpResult GcCanUnInitialize()
         {
             // 关闭USBCAN设备的通道1
             if (ECANDLL.CloseDevice(deviceType, deviceIndex) == ECAN.ECANStatus.STATUS_OK)
             {
-                return true;
+                return EcanXcpResult.XCP_ERR_OK;
             }
             else
             {
-                return false;
+                return EcanXcpResult.XCP_ERR_GENERIC;
             }
         }
 
