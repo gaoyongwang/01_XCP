@@ -88,6 +88,7 @@ namespace WindowsFormsApplication
         {
             result = xcpapi.XCP_Connect(0x00, out msgTemp, 0x08);
             PrintLog(BitConverter.ToString(msgTemp));
+            PrintLog(result.ToString());
         }
 
         private void button_Disconnect_Click(object sender, EventArgs e)

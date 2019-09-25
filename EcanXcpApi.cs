@@ -196,6 +196,7 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Connect(byte mode, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            ctoBuffer = new byte[ctoBufferLength];
             CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
             UInt32 numOfFrameTX;// 实际发送帧数量
             UInt32 numOfFrameRX;// 接收帧数量
@@ -221,7 +222,6 @@ namespace ECANXCP
 
             if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
@@ -301,7 +301,6 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -315,6 +314,7 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Disconnect(out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            ctoBuffer = new byte[ctoBufferLength];
             CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
             UInt32 numOfFrameTX;// 实际发送帧数量
             UInt32 numOfFrameRX;// 接收帧数量
@@ -339,7 +339,6 @@ namespace ECANXCP
 
             if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
@@ -419,7 +418,6 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -435,6 +433,7 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_SetMemoryTransferAddress(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            ctoBuffer = new byte[ctoBufferLength];
             CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
             UInt32 numOfFrameTX;// 实际发送帧数量
             UInt32 numOfFrameRX;// 接收帧数量
@@ -461,7 +460,6 @@ namespace ECANXCP
 
             if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
@@ -541,7 +539,6 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -557,6 +554,7 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_ShortUpload(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            ctoBuffer = new byte[ctoBufferLength];
             CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
             UInt32 numOfFrameTX;// 实际发送帧数量
             UInt32 numOfFrameRX;// 接收帧数量
@@ -584,7 +582,6 @@ namespace ECANXCP
 
             if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
@@ -664,7 +661,6 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
@@ -679,6 +675,7 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Download(byte[] data, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            ctoBuffer = new byte[ctoBufferLength];
             CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
             UInt32 numOfFrameTX;// 实际发送帧数量
             UInt32 numOfFrameRX;// 接收帧数量
@@ -705,7 +702,6 @@ namespace ECANXCP
 
             if ((numOfFrameTX = ECANDLL.Transmit(deviceType, deviceIndex, canIndex, frameInfo, 1)) != 1)// 如果发送命令失败
             {
-                ctoBuffer = new byte[ctoBufferLength];
                 // Function not available / Operation not implemented
                 return EcanXcpResult.XCP_ERR_NOT_IMPLEMENTED;
             }
@@ -785,7 +781,6 @@ namespace ECANXCP
                 }
             }
             // 尝试5次，超时
-            ctoBuffer = new byte[ctoBufferLength];
             // A timeout was reached by calling a function synchronously
             return EcanXcpResult.XCP_ERR_INTERNAL_TIMEOUT;
             #endregion
