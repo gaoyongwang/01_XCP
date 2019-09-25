@@ -14,12 +14,6 @@ namespace ECANXCP
         private string baudrate;// 波特率
         private UInt32 masterID;// 主设备ID
         private UInt32 slaveID;// 从设备ID
-        INIT_CONFIG initConfig = new INIT_CONFIG();// 创建CAN初始化配置结构体
-        CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
-        FILTER_RECORD filterRecord = new FILTER_RECORD();// 定义CAN滤波器的滤波范围
-
-        private UInt32 numOfFrameTX;// 实际发送帧数量
-        private UInt32 numOfFrameRX;// 接收帧数量
 
         public UInt32 DeviceType { get; set; }
         public UInt32 DeviceIndex { get; set; }
@@ -46,6 +40,9 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult GcCanInitialize(out BOARD_INFO boardInfo)
         {
+            INIT_CONFIG initConfig = new INIT_CONFIG();// 创建CAN初始化配置结构体
+            FILTER_RECORD filterRecord = new FILTER_RECORD();// 定义CAN滤波器的滤波范围
+
             boardInfo.hw_Version = 0x00;
             boardInfo.fw_Version = 0x00;
             boardInfo.dr_Version = 0x00;
@@ -199,6 +196,10 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Connect(byte mode, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+            UInt32 numOfFrameTX;// 实际发送帧数量
+            UInt32 numOfFrameRX;// 接收帧数量
+
             #region Packet Identifier:CMD Command:CONNECT
             // 报文帧ID为
             frameInfo.ID = masterID;
@@ -314,6 +315,10 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Disconnect(out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+            UInt32 numOfFrameTX;// 实际发送帧数量
+            UInt32 numOfFrameRX;// 接收帧数量
+
             #region Packet Identifier:CMD Command:DISCONNECT
             // 报文帧ID为
             frameInfo.ID = masterID;
@@ -430,6 +435,10 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_SetMemoryTransferAddress(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+            UInt32 numOfFrameTX;// 实际发送帧数量
+            UInt32 numOfFrameRX;// 接收帧数量
+
             #region Packet Identifier:CMD Command:SET_MTA
             // 报文帧ID为
             frameInfo.ID = masterID;
@@ -548,6 +557,10 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_ShortUpload(byte addrExtension, UInt32 addr, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+            UInt32 numOfFrameTX;// 实际发送帧数量
+            UInt32 numOfFrameRX;// 接收帧数量
+
             #region Packet Identifier:CMD Command:SHORT_UPLOAD
             // 报文帧ID为
             frameInfo.ID = masterID;
@@ -666,6 +679,10 @@ namespace ECANXCP
         /// <returns></returns>
         public EcanXcpResult XCP_Download(byte[] data, out byte[] ctoBuffer, UInt16 ctoBufferLength)
         {
+            CAN_OBJ frameInfo = new CAN_OBJ();// 报文帧
+            UInt32 numOfFrameTX;// 实际发送帧数量
+            UInt32 numOfFrameRX;// 接收帧数量
+
             #region Packet Identifier:CMD Command:DOWNLOAD
             // 报文帧ID为
             frameInfo.ID = masterID;
